@@ -1,0 +1,35 @@
+MODULE step(x,y)
+	ASSIGN
+	next(x) :=
+		case
+		x!=0 & x!=4 :{x + 1 , x - 1};	
+		x = 0 : {x + 1};
+		x = 4 : {x - 1};
+		TRUE : x;
+		esac;
+	next(y) :=
+		case
+		y!=0 & y!=4 :{ y + 1 , y - 1};
+		y = 0 : {y + 1};
+		y = 4 : {y - 1};
+		TRUE : y;
+		esac;
+MODULE main
+VAR
+	x1: 0..4;
+	y1: 0..4;
+	x2: 0..4;
+	y2: 0..4;
+	x_x : process step(x1,x2);
+	x_y : process step(x1,y2);
+	y_x : process step(y1,x2);
+	y_y : process step(y1,y2);
+
+
+ASSIGN 
+	init(x1):=0;
+	init(y1):=0;
+	init(x2):=4;
+	init(y2):=4;
+
+LTLSPEC !(	F((x1=4 & y1=4) & F(x1=4 & y1=4 & x2=0 & y2=0))  &  ( G!( ( X( (y2 - y1=0) &(x1 - x2=1) ) & (y2 - y1=0) &(x2 - x1=1) 	) | (	X( (y2 - y1=0) &(x2 - x1=1) ) & (y2 - y1=0) &(x1 - x2=1)	)|(	X( (x2 - x1=0) &(y1 - y2=1) ) & (x2 - x1=0) &(y2 - y1=1)) | ( X( (x2 - x1=0) &(y2 - y1=1) ) & (x2 -x1=0) &(y1 - y2=1)) ))	& (G!(x1=x2 & y1=y2))&(G!(	(x1=2 & y1=0)|(x1=3 & y1=0)|(x1=1 & y1=2)|(x1=3 & y1=2)|(x1=1 & y1=4)|(x1=2 & y1=4)	|	(x2=2 &y2=0)|(x2=3 &y2=0)|(x2=1 &y2=2)|(x2=3 &y2=2)|(x2=1 &y2=4)|(x2=2 &y2=4))	))
